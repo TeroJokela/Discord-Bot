@@ -61,8 +61,10 @@ async def on_message(message):
             exit()
 
     # Roll a random number between 0 and 100 and send it to the chat channel where the command was sent
+    # And tag the one who rolled the number
     elif message.content.startswith("!roll"):
-        await client.send_message(message.channel, str(random.randint(0, 100)))
+        tagMe = discord.User().name = message.author
+        await client.send_message(message.channel, tagMe.mention + " rolled " + str(random.randint(0, 100)))
 
     # Send a text-to-speech text to the channel where the command was called
     # Text-to-speech plays to everyone who is using Discord and can read the channel
