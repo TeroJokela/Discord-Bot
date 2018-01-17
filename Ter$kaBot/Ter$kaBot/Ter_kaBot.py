@@ -198,12 +198,22 @@ async def on_message(message):
         # Send an input so it shows "Ter$kaBot is typing..." in the discord text channel
         await client.send_typing(message.channel)
 
+        # Create a link to the picture and download it
         link = ImgurSpider.Imgur.createLink(message.content[9:])
         while ImgurSpider.Imgur.downloadRandomPicByTag(link) == False:
             # Send an input so it shows "Ter$kaBot is typing..." in the discord text channel
             await client.send_typing(message.channel)
+        # Send the picture
         await client.send_file(message.channel, r'pic.jpg')
 
+    # This is changes the "playing" status on Discord to the text after the "!playing" command
+    elif message.content.startswith("!playing"):
+        if isAdmin(str(message.author)):
+            Game = discord.Game(name=message.content[9:])
+            await client.change_presence(game=Game)
+        else:
+            await client.send_message(message.channel, "You can't tell me what to do >:(")
+        
     # Flips a virtual coin (chooses either "Heads" or "Tails" randomly) and sends the result to the message 
     # channel where the command was called
     elif message.content.startswith("!coinflip"):
