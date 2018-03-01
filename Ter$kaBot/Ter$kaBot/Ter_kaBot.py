@@ -213,7 +213,14 @@ async def on_message(message):
             await client.change_presence(game=Game)
         else:
             await client.send_message(message.channel, "You can't tell me what to do >:(")
-        
+    
+    # Send a custom message to a channel
+    # Usage: "!MessageTo <CHANNEL ID HERE> <CUSTOM MESSAGE HERE>"
+    elif message.content.startswith("!MessageTo"):
+        if isAdmin(str(message.author)):
+            channel = message.content[11:29]
+            await client.send_message(client.get_channel(channel), message.content[30:])
+
     # Flips a virtual coin (chooses either "Heads" or "Tails" randomly) and sends the result to the message 
     # channel where the command was called
     elif message.content.startswith("!coinflip"):
