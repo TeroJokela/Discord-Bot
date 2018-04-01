@@ -67,7 +67,7 @@ def logCommand(message):
         print("[" + str(message.timestamp) + "] (" + message.content + ") by " + str(message.author) + " in " + str(message.server) + "->#" + str(message.channel))
 
 # The bot admins and a function to check if a specific user is an admin or not
-botAdmins = ["Helmerz#8030", "Tehdak#0539"]
+botAdmins = ["Helmerz#8030", "More Users Here"]
 def isAdmin(user):
     for i in botAdmins:
         if i == user:
@@ -75,7 +75,7 @@ def isAdmin(user):
     return False
 	
 # Blacklisting servers that don't want to use the gyazo embed thing
-gyazoList = ["Omnia Datanomit", "     "]
+gyazoList = ["Server1", "More servers here"]
 def isGyazo(server):
     for i in gyazoList:
         if i == server:
@@ -83,7 +83,7 @@ def isGyazo(server):
     return False
 
 # Blacklisting servers that don't want to get reacted with a lot of messages
-reactBlacklist = ["discord.py", "unkown server"]
+reactBlacklist = ["Server1", "More servers here"]
 def isReactBlacklisted(server):
     for i in reactBlacklist:
         if i == server:
@@ -109,12 +109,6 @@ async def on_ready():
             print(str(i) + ")")
         else:
             print(str(i) + ",", end=" ")
-
-    await client.send_message(client.get_channel('406410395843297280'), "I'm alive again! c:")
-
-#@client.event
-#async def on_typing(channel, user, when):
-#    await client.send_message(channel, str(user) + " is typing!")
 
 def leaveVoice(_voice):
     coro = _voice.disconnect()
@@ -216,53 +210,6 @@ async def on_message(message):
             player = voice.create_ffmpeg_player('earrape.mp3', after=lambda: leaveVoice(voice))
             player.start()
 
-    # Broken, doesn't work properly and I'm too lazy to fix it right now :)
-    #elif message.content.startswith(prefix + "play"):
-    #    url = message.content[len(prefix + "play"):]
-    #    tagMe = discord.User().name = message.author
-    #    msg = await client.send_message(message.channel, "[DOWNLOADING]\n" + url + "\nRequested by: " + tagMe.mention)
-    #    print("[" + url + "]")
-    #    voice = await client.join_voice_channel(message.author.voice.voice_channel)
-    #    options = {
-    #       'default_search': 'auto',
-    #       'format': 'bestaudio/best',
-    #       'ignoreerrors': True,
-    #       'source_address': '0.0.0.0', # Make all connections via IPv4
-    #       'nocheckcertificate': True,
-    #       'restrictfilenames': True,
-    #       'logger': logging.getLogger(__name__),
-    #       'logtostderr': False,
-    #       'no_warnings': True,
-    #       'quiet': True,
-    #       'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-    #       'noplaylist': True
-    #        }
-    #    global player
-    #    player = await voice.create_ytdl_player(url, ytdl_options=options)
-    #    #musics += player.title
-    #    await client.edit_message(msg, new_content="[DOWNLOADED]\n" + url + "Requested by: " + tagMe.mention)
-    #    await client.send_message(message.channel, "Playing `" + player.title + "`")
-    #    player.volume = 1
-    #    player.start()
-
-    #elif message.content.startswith(prefix + "pause"):
-    #    try:
-    #        player.pause()
-    #    except NameError:
-    #        await client.send_message(message.channel, "No audio playing!")
-
-    #elif message.content.startswith(prefix + "resume"):
-    #    try:
-    #        player.resume()
-    #    except NameError:
-    #        await client.send_message(message.channel, "No audio playing!")
-            
-    #elif message.content.startswith(prefix + "queue"):
-    #    sendThis = "The list currently has:\n"
-    #    for song in musics:
-    #        sendThis += str(song.title) + "\n"
-    #    await client.send_message(message.channel, sendThis)
-
     # Roll a random number between 0 and 100 and send it to the chat channel where the command was sent
     # And tag the one who rolled the number
     elif message.content.startswith(prefix + "roll"):
@@ -312,13 +259,15 @@ async def on_message(message):
         logCommand(message)
 
         try:
+	    # See if the message author is a bot-admin
             if isAdmin(str(message.author)):
                 howMany = int(message.content[16:]) + 1
+		# Remove messages
                 await client.purge_from(message.channel, limit=howMany)
                 await client.send_message(message.channel, "Removed " + str(howMany - 1) + " messages!")
-            else:
+            else: # Message author it not a bot-admin
                 await client.send_message(message.channel, "You can't tell me what to do >:(")
-        except discord.errors.Forbidden:
+        except discord.errors.Forbidden: # No permissions to remove messages
             await client.send_message(message.channel, "I can't remove messages here!")
 
     # We download a random picture and send it to the chat channel where the command was sent
@@ -426,6 +375,7 @@ async def on_message(message):
             textHelp = myfile.read()
         await client.send_message(message.channel, textHelp)
 
+    # Send a custom message to a specific channel (The bot must be in the same server and you must send the channel ID)
     elif message.content.startswith(prefix + "messageTo"):
         if isAdmin(str(message.author)):
             channel = message.content[11:29]
@@ -488,6 +438,7 @@ async def on_message(message):
         embed = discord.Embed(title=map['artist'] + " - " + map['title'] + " [" + map['version'] + "]", description=description, colour=0x53A0FF)
         await client.send_message(message.channel, embed=embed)
         
+    # Remove the normal gyazo message and send the direct link to the image
     elif message.content.startswith("https://gyazo.com/") and isGyazo(str(message.server)):
         link = message.content[:50]
         tagMe = discord.User().name = message.author
