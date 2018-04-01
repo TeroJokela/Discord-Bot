@@ -6,7 +6,6 @@
 '''
 from chatterbot import ChatBot
 from urllib import request
-#import cleverbot_io
 import configparser
 import requests
 import discord
