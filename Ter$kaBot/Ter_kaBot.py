@@ -29,10 +29,6 @@ prefix = "~"
 config = configparser.ConfigParser()
 config.read("auth.ini")
 
-# Servers
-serversConfig = configparser.ConfigParser()
-serversConfig.read("servers.ini")
-
 # Initialise Google image API
 googleAPIKey = config.get('google', 'APIKey')
 googleCX = config.get('google', 'CX')
