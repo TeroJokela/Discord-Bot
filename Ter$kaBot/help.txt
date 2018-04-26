@@ -1,21 +1,22 @@
 I've been created by **Helmerz** (_http://www.helmerz.xyz_) for educational purposes
 
-Here's what commands I can do right now:```
-~quit (Bot-admins only)
-~roll (Get a random number between 0 and 100)
-~roll [max number] (Get a random number between 0 and [max number])
-~CreateEmoji [direct link to a picture] (Creates a custom emoji. Bot-admins only)
-~DeleteEmoji (Deletes a custom emoji from the server. Bot-admins only)
-~RemoveMessages [amount] (removes the amount of messages you give it to, bot-admins only)
-~picture [tag] (downloads a picture with your desired tag from google WARNING: SAFE SEARCH IS TURNED OFF)
-~picture random (gives you a random picture freshly posted to imgur)
-~NSFWAnime (Just try it, I regret making this command every day)
-~coinflip (I'll flip a coin and tell the outcome, what did you expect?)
-~MessageMe (I will send you a message)
-~ReactToMessages (Starts adding a random server custom emoji reaction to every message. Bot-admins only)
-~help (this command)```
-osu! integration:```
-Paste a map's link to get some data from the map
-Paste an user's profile link to get some data about the user
-```
+Here's what commands I can do right now (Please remember that the commands are CaSe SeNsItIvE):
+
+**AVAILABLE FOR EVERYONE:**```css
+~roll /* Get a random number between 0 and 100 */
+~roll [max number] /* Get a random number between 0 and [max number] */
+~post [text] /* Send a custom message to our website */
+~postBanlist /* Get a list of currently banned users for using the ~post command */
+~pictureBanlist /* Get a list of currently banned users for using the ~picture command */
+~picture [tag] /* Downloads a picture with your desired tag from Google WARNING: SAFE SEARCH IS TURNED OFF */
+~picture random /* Gives you a random picture freshly posted to Imgur */
+~NSFWAnime /* Just try it, I regret making this command every day */
+~coinflip /* I'll flip a coin and tell the outcome, what did you expect? */
+~uptime /* I'll give you the current uptime in seconds */
+~messageMe /* I will send you a message */
+~ping /* Pong! */
+~speedtest /* I'll run a speedtest and give you the result */
+~help /* This command */```
 You can also talk to me by first tagging me and then what do you want to say! (Example: "<@397454492108324864> How was your day?")
+
+To get the commands available for bot-admins, please use `~help_admin`!

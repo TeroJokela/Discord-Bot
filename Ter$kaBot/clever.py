@@ -24,7 +24,11 @@ class CleverBot(object):
             'text': text
         }
 
-        r = requests.post('https://cleverbot.io/1.0/ask', json=body)
+        try:
+            r = requests.post('https://cleverbot.io/1.0/ask', json=body, timeout=20)
+        except requests.exceptions.ReadTimeout:
+            return False    
+        
         r = json.loads(r.text)
 
         if r['status'] == 'success':

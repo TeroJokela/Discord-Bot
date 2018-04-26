@@ -1,0 +1,20 @@
+I've been created by **Helmerz** (_http://www.helmerz.xyz_) for educational purposes
+
+Here's what commands I can do right now (Please remember that the commands are CaSe SeNsItIvE):
+
+**BOT-ADMINS ONLY:**```css
+~die / ~quit /* Kills the bot */
+~createEmoji [direct link to a picture] /* Creates a custom emoji */
+~deleteEmoji /* Deletes a custom emoji from the server */
+~removeMessages [amount] /* Removes the amount of messages you give it to */
+~reactToMessages /* Starts adding a random server custom emoji reaction to every message */
+~earrape [channel ID] /* Yeah... */
+~listening [to what] /* Change your "listening to" status */
+~playing [game] /* Change your "playing" status */
+~watching [what] /* Change your "watching" status */
+~postBan [user's tag] /* Ban a user from using the ~post command */
+~postUnban [user's tag] /* Unban a user from using the ~post command */
+~pictureBan [user's tag] /* Ban a user from using the ~picture command */
+~pictureUnban [user's tag] /* Unban a user from using the ~picture command */```
+
+To get the commands available for everyone, please use `~help`!

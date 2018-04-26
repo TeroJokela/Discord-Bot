@@ -1,6 +1,7 @@
 import json
 import requests
 from urllib import request
+from urllib.parse import quote
 import random
 
 # Our API's base URL
@@ -12,8 +13,8 @@ class gAPI(object):
         self.cxKey = cxKey.replace(":", "%")
 
     def requestImages(self, tag):
-        tag = tag.replace(" ", "+")
-        
+        tag = quote(tag, safe='') # Make "tag" URL-safe
+
         args = [
             "q=" + tag,
             "key=" + self.APIKey,
@@ -37,7 +38,11 @@ class gAPI(object):
         try:
             listItems = dic['items']
         except KeyError:
-            return False
+            try:
+                if dic['error']['errors'][0]['reason'] == 'dailyLimitExceeded':
+                    return "No_Requests_Left"
+            except KeyError:
+                return "No_Results"
         
         pictureLinks = []
         for i in listItems:
@@ -46,13 +51,5 @@ class gAPI(object):
 
         return pictureLinks[random.randint(0, len(pictureLinks) - 1)]
 
-        #while True:
-        #    try:
-        #        request.urlretrieve(pictureLinks[random.randint(0, len(pictureLinks) - 1)], "picture.png")
-        #    except:
-        #        continue
-        #    break    
-        #return True
-
 if __name__ == '__main__':
-    downloadRandomPicture(input("> "))
+    print(API.downloadRandomPicture(input("> ")))
