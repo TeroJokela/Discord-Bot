@@ -664,12 +664,11 @@ async def on_message(msg):
     elif msg.content.startswith("<@397454492108324864>"):
         # Send an input so it shows "Ter$kaBot is typing..." in the discord text channel
         await client.send_typing(msg.channel)
-        
-        #chatbotAnswer = str(chatbot.get_response(message.content[22:])) #Chatterbot
-        chatbotAnswer = cleverbot.query(msg.content[22:]) # Cleverbot
-        output = msg.author.mention + " " + chatbotAnswer
-        
-        await client.send_message(msg.channel, output)
+
+        #chatbotAnswer = str(chatbot.get_response(message.content[22:])) # Chatterbot
+        chatbotAnswer = await cleverbot.query(msg.content[22:]) # Cleverbot
+
+        await client.send_message(msg.channel, "{0} {1}".format(msg.author.mention, chatbotAnswer))
 
     await client.process_commands(msg)
     return
