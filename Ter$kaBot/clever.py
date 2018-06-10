@@ -1,4 +1,4 @@
-import requests
+import aiohttp
 import json
 
 class CleverBot(object):
@@ -7,16 +7,7 @@ class CleverBot(object):
         self.key = key
         self.nick = nick
 
-        body = {
-            'user': user,
-            'key': key,
-            'nick': nick
-        }
-
-        requests.post('https://cleverbot.io/1.0/create', json=body)
-
-
-    def query(self, text):
+    async def query(self, text):
         body = {
             'user': self.user,
             'key': self.key,
@@ -24,14 +15,9 @@ class CleverBot(object):
             'text': text
         }
 
-        try:
-            r = requests.post('https://cleverbot.io/1.0/ask', json=body, timeout=20)
-        except requests.exceptions.ReadTimeout:
-            return False    
-        
-        r = json.loads(r.text)
+        async with aiohttp.ClientSession() as session:
+            async with session.post('https://cleverbot.io/1.0/ask', data=body) as response:
+                r = await response.text()
 
-        if r['status'] == 'success':
-            return r['response']
-        else:
-            return False
+        r = json.loads(r)
+        return r['response']
