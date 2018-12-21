@@ -29,7 +29,15 @@ class Help(object):
             commandsText += f"{cmd.brief} " if cmd.brief != None else ""
             commandsText += f"/* {cmd.help} */\n"
 
-        await self.client.say(commandsText + "```")
+        if len(commandsText) > 2000:
+            texts = []
+            pos1 = commandsText.find('\n', 1700, 1900)
+            texts.append(commandsText[:pos1] + "```")
+            texts.append(f"```css\n{commandsText[pos1:]}```")
+            for i in texts:
+                await self.client.say(i)
+        else:
+            await self.client.say(commandsText + "```")
 
 
 def setup(client: commands.Bot):

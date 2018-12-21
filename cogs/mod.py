@@ -2,6 +2,8 @@ from discord.ext import commands
 import discord
 import aiohttp
 import random
+import json
+import os
 
 
 class Mod(object):
@@ -24,13 +26,13 @@ class Mod(object):
             if i.type == discord.ChannelType.text or i.type == discord.ChannelType.voice:
                 await self.client.edit_channel_permissions(i, mutedRole, mutedOverwrite)
 
-        await self.client.say(f"Successfully created role `Ter$kaMuted`!")
+        await self.client.say("Successfully created role `Ter$kaMuted`!")
         await self.client.say("Initialization done! c:")
 
     @initialize.error
     async def initialize_eh(self, err, ctx: commands.Context):
         if isinstance(err, commands.CheckFailure):
-            await self.client.say(f"Either you or I are not administrators here :c")
+            await self.client.say("Either you or I are not administrators here :c")
         else:
             print(f"Error {type(err).__name__}: {err}")
 
@@ -137,6 +139,86 @@ class Mod(object):
             else:
                 await self.client.reply("that's not a custom emoji! Baka!")
 
+    @commands.command(pass_context=True, brief="[tag user] [reason (optional)]")
+    @commands.has_role("Ter$kaMod")
+    async def warn(self, ctx: commands.Context, toWarn: discord.Member, *, reason="unspecified"):
+        """Warn a user in the server"""
+        await self.client.send_typing(ctx.message.channel)
+        await self.client.delete_message(ctx.message)
+        # Add the warning to our json file (better spaghetti producer than your favourite italian restaraunt)
+        r = open(f"{os.getcwd()}/resources/warnings.json", "r")
+        data = json.loads(r.read())
+        r.close()
+        if not ctx.message.server.id in data:
+            data[ctx.message.server.id] = {}
+        if not toWarn.id in data[ctx.message.server.id]:
+            data[ctx.message.server.id][toWarn.id] = []
+        data[ctx.message.server.id][toWarn.id].append(reason)
+        w = open(f"{os.getcwd()}/resources/warnings.json", "w")
+        json.dump(data, w)
+        w.close()
+        await self.client.say(f"{ctx.message.author.mention} has warned {toWarn.mention} for `{reason}`")
 
+    @warn.error
+    async def warn_eh(self, err: Exception, ctx: commands.Context):
+        if isinstance(err, commands.MissingRequiredArgument):
+            await self.client.reply("you're missing something... Baka...")
+        elif isinstance(err, commands.BadArgument):
+            await self.client.reply("what the fuck is that argument..? Baka...")
+        elif isinstance(err, commands.CheckFailure):
+            await self.client.reply("you don't have the `Ter$kaMod` role!")
+
+    @commands.command(pass_context=True, brief="[tag user]")
+    async def warnings(self, ctx: commands.Context, target: discord.Member):
+        """Show all warnings for a user"""
+        await self.client.send_typing(ctx.message.channel)
+        r = open(f"{os.getcwd()}/resources/warnings.json", "r")
+        data = json.loads(r.read())
+        try:
+            warnings = data[ctx.message.server.id][target.id]
+        except:
+            await self.client.say(f"{target.mention} is a good lad and has behaved well! [0 warnings]")
+        if len(warnings) == 0:
+            await self.client.say(f"{target.mention} is a good lad and has behaved well! [0 warnings]")
+            return
+        msg = f"The user {target.mention} has `{len(warnings)}` warning{'s' if len(warnings) > 1 else ''}!```"
+        for i in warnings:
+            msg += f"{i}\n"
+        await self.client.say(f"{msg}```")
+
+    @warnings.error
+    async def warnings_eh(self, err: Exception, ctx: commands.Context):
+        if isinstance(err, commands.MissingRequiredArgument):
+            await self.client.reply("you're missing something... Baka...")
+        elif isinstance(err, commands.BadArgument):
+            await self.client.reply("what the fuck is that argument..? Baka...")
+
+    @commands.command(pass_context=True, brief="[tag user]")
+    @commands.has_role("Ter$kaMod")
+    async def clearWarnings(self, ctx: commands.Context, toClear: discord.Member):
+        """Clear all warnings for a user"""
+        await self.client.send_typing(ctx.message.channel)
+        await self.client.delete_message(ctx.message)
+        # Clear the warnings in our json file (better spaghetti producer than your favourite italian restaraunt)
+        r = open(f"{os.getcwd()}/resources/warnings.json", "r")
+        data = json.loads(r.read())
+        r.close()
+        try:
+            data[ctx.message.server.id][toClear.id] = []
+        except:
+            await self.client.say(f"{toClear.mention} is already a good lad! [No warnings]")
+        w = open(f"{os.getcwd()}/resources/warnings.json", "w")
+        json.dump(data, w)
+        w.close()
+        await self.client.say(f"{toClear.mention} is now a good lad! [Warnings cleared]")
+
+    @clearWarnings.error
+    async def clearWarnings_eh(self, err: Exception, ctx: commands.Context):
+        if isinstance(err, commands.MissingRequiredArgument):
+            await self.client.reply("you're missing something... Baka...")
+        elif isinstance(err, commands.BadArgument):
+            await self.client.reply("what the fuck is that argument..? Baka...")
+
+            
 def setup(client: commands.Bot):
     client.add_cog(Mod(client))

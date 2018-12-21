@@ -54,7 +54,7 @@ async def on_ready():
 # This is necessary for the tag-only function for the chatbot
 @client.event
 async def on_message(msg):
-    if msg.content.startswith("<@397454492108324864>"):
+    if msg.content.startswith(f"<@{client.user.id}>") and msg.author != client.user:
         await client.send_typing(msg.channel)
         res = await client.getResponse(msg.content[22:])
         await client.send_message(msg.channel, f"{msg.author.mention} {res}")
