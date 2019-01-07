@@ -33,7 +33,6 @@ class Troll(object):
         player = voice.create_ffmpeg_player(f"{os.getcwd()}/resources/earrape.mp3", after=lambda: self.leaveVoice(voice))
         player.volume = 2.0
         player.start()
-        await self.client.delete_message(ctx.message)
 
 
 def setup(client: commands.Bot):

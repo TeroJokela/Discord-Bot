@@ -36,8 +36,31 @@ class Misc(object):
     @commands.command(pass_context=True)
     async def battleroyale(self, ctx: commands.Context):
         """The truth about battleroyale"""
-        await self.client.reply("UwU battleroyale gamemodes **SUCK**! OwO :3 Rawr")
-        
+        await self.client.reply("UwU battleroyale gamemodes **SUCK**! OwO :3 Rawr") # I'm not a furry I swear to god
+
+    @commands.command(pass_context=True, brief="[tag user]")
+    async def love(self, ctx: commands.Context, toCompare: discord.User):
+        """Tells you how much love there is between you and someone else"""
+        if int(toCompare.id) > int(ctx.message.author.id):
+            percentage = int(ctx.message.author.id) / int(toCompare.id)
+        else:
+            percentage = int(toCompare.id) / int(ctx.message.author.id)
+        percentage *= 100
+        percentage = round(percentage, 2)
+        loveHeart = [":broken_heart:", ":heart:", ":sparkling_heart:", ":heartpulse:", ":cupid:"][round(percentage / 25)]
+        embed = discord.Embed(colour=0xFF69B4)
+        embed.set_author(name="❤️ Love calculator ❤️")
+        embed.set_footer(text=datetime.datetime.now().strftime("%d.%m.%Y at %H:%M"))
+        embed.add_field(name=f"{ctx.message.author} {loveHeart} {toCompare}", value=f"There's `{percentage}%` love between you two!")
+        await self.client.say(embed=embed)
+
+    @love.error
+    async def love_eh(self, err: Exception, ctx: commands.Context):
+        if isinstance(err, commands.MissingRequiredArgument):
+            await self.client.say(f"{ctx.message.author.mention} you forgot something... Baka...")
+        elif isinstance(err, commands.BadArgument):
+            await self.client.say(f"{ctx.message.author.mention} what the fuck are you doing? Baka...")
+            
     @commands.command(pass_context=True)
     async def serverInfo(self, ctx: commands.Context):
         """Get information about the server"""

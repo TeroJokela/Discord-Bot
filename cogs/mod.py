@@ -113,10 +113,10 @@ class Mod(object):
         elif isinstance(err, commands.MissingRequiredArgument):
             await self.client.say(f"{ctx.message.author.mention} you forgot something... Baka...")
         elif isinstance(err, commands.CommandInvokeError):
-            if "HTTPException" in err.__str__(): # Nice hack
-                await self.client.reply("all the custom emoji slots are already in use!")
-            elif "FORBIDDEN" in err.__str__():
+            if isinstance(err.original, discord.Forbidden):
                 await self.client.reply("I don't have permissions to create emojis here >:(")
+            elif isinstance(err.original, discord.HTTPException):
+                await self.client.say(f"{ctx.message.author.mention} all the custom emoji slots are already in use... Baka...")
             else:
                 await self.client.reply("I wasn't able to get an image from that URL... Are you sure it's a direct link?")
 

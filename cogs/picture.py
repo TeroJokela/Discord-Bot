@@ -3,6 +3,7 @@ from discord.ext import commands
 from io import BytesIO
 import discord
 import aiohttp
+import random
 import json
 import os
 
@@ -91,11 +92,14 @@ class Picture(object):
         slapperAvatarBytes = await self.getAvatarBytes(ctx.message.author)
         toSlapAvatarBytes = await self.getAvatarBytes(toSlap)
 
-        with open("./resources/slapGifs.json") as file:
+        with open("./resources/data.json") as file:
             dic = json.loads(file.read())
+            file.close()
+
+        slapGifData = random.choice(dic["slapData"])
 
         # Because "makeSlapGif" isn't an async function, we can do this to prevent it blocking the main thread
-        gif = await self.client.loop.run_in_executor(None, self.makeSlapGif, dic, slapperAvatarBytes, toSlapAvatarBytes)
+        gif = await self.client.loop.run_in_executor(None, self.makeSlapGif, slapGifData, slapperAvatarBytes, toSlapAvatarBytes)
 
         embed = discord.Embed(description=f"{ctx.message.author.mention} slapped {toSlap.mention}!", colour=0xFF0000)
         embed.set_image(url="attachment://OwO.gif")
