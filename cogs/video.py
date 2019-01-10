@@ -19,7 +19,7 @@ class Video(object):
     async def crabrave(self, ctx: commands.Context, *, text: str):
         """Make a dead meme"""
         userID = ctx.message.author.id
-        msg = await self.client.say(f"{ctx.message.author.mention} making your clip... Hold on... _(This should take only ~20 seconds)_")
+        await self.client.say(f"{ctx.message.author.mention} making your clip... Hold on... _(This should take only ~20 seconds)_")
         await self.client.loop.run_in_executor(None, self.makeCrabRave, text, userID)
         await self.client.send_file(ctx.message.channel, f"Crab_Rave_{userID}.mp4", content=f"Here's your clip, {ctx.message.author.mention}:")
         os.remove(f"Crab_Rave_{userID}.mp4")
