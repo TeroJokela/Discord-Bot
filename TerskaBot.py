@@ -29,7 +29,8 @@ client.allCogs = [
     "cogs.help",
     "cogs.helmerz",
     "cogs.misc",
-    "cogs.picture"
+    "cogs.picture",
+    "cogs.video"
 ]
 
 
