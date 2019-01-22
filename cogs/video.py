@@ -1,3 +1,4 @@
+from .helpers.error import sendErrorToOwner
 from discord.ext.commands.cooldowns import BucketType
 from discord.ext import commands
 from moviepy.editor import *
@@ -30,6 +31,8 @@ class Video(object):
             await self.client.say(f"{ctx.message.author.mention} {str(err)}")
         elif isinstance(err, commands.MissingRequiredArgument):
             await self.client.say(f"{ctx.message.author.mention} you forgot something... Baka...")
+        else:
+            await sendErrorToOwner(self.client, err)
 
 
 def setup(client: commands.Bot):

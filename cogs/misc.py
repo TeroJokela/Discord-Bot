@@ -1,3 +1,4 @@
+from .helpers.error import sendErrorToOwner
 from discord.ext import commands
 import datetime
 import discord
@@ -26,6 +27,8 @@ class Misc(object):
     async def roll_eh(self, err: Exception, ctx: commands.Context):
         if isinstance(err, commands.BadArgument):
             await self.client.reply("please give me whole numbers only c:")
+        else:
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(pass_context=True)
     async def coinflip(self, ctx: commands.Context):
@@ -60,7 +63,9 @@ class Misc(object):
             await self.client.say(f"{ctx.message.author.mention} you forgot something... Baka...")
         elif isinstance(err, commands.BadArgument):
             await self.client.say(f"{ctx.message.author.mention} what the fuck are you doing? Baka...")
-            
+        else:
+            await sendErrorToOwner(self.client, err)
+
     @commands.command(pass_context=True)
     async def serverInfo(self, ctx: commands.Context):
         """Get information about the server"""
@@ -86,9 +91,10 @@ class Misc(object):
         embed.add_field(name="Creation time", value=f"{ordinal(server.created_at.day)} of {server.created_at.strftime('%B, %Y')} ({serverCreationTime.days} days ago)", inline=True)
         await self.client.say(embed=embed)
 
-    @commands.command(pass_context=True, brief="[tag user]")
-    async def userInfo(self, ctx: commands.Context, user: discord.Member):
+    @commands.command(pass_context=True, brief="[tag user (defaults to yourself)]")
+    async def userInfo(self, ctx: commands.Context, user=None):
         """Get information about a user"""
+        user = ctx.message.server.get_member(user.replace("<@", "")[:-1]) if user else ctx.message.author
         await self.client.send_typing(ctx.message.channel)
         ordinal = lambda n: "%d%s" % (n, "tsnrhtdd" [(n // 10 % 10 != 1) * (n % 10 < 4) * n % 10::4]) # Shoutout to Fartemis_ on Twitch for this <3
         userCreationTime = datetime.datetime.utcnow() - user.created_at
@@ -120,6 +126,8 @@ class Misc(object):
             await self.client.reply("you need to tag a user... Baka...")
         elif isinstance(err, commands.MissingRequiredArgument):
             await self.client.reply("you forgot something... Baka...")
+        else:
+            await sendErrorToOwner(self.client, err)
 
 
 def setup(client: commands.Bot):

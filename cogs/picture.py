@@ -1,3 +1,4 @@
+from .helpers.error import sendErrorToOwner
 from PIL import Image, ImageOps, ImageDraw
 from discord.ext import commands
 from io import BytesIO
@@ -84,6 +85,8 @@ class Picture(object):
             await self.client.say(f"{ctx.message.author.mention} you forgot something... Baka...")
         elif isinstance(err, commands.BadArgument):
             await self.client.say(f"{ctx.message.author.mention} what the fuck are you doing? Baka...")
+        else:
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(pass_context=True, brief="[tag someone]")
     async def slap(self, ctx: commands.Context, toSlap: discord.Member):
@@ -113,6 +116,8 @@ class Picture(object):
             await self.client.say(f"{ctx.message.author.mention} you forgot something... Baka...")
         elif isinstance(err, commands.BadArgument):
             await self.client.say(f"{ctx.message.author.mention} what the fuck are you doing? Baka...")
+        else:
+            await sendErrorToOwner(self.client, err)
 
 
 def setup(client: commands.Bot):

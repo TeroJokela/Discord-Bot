@@ -1,5 +1,7 @@
+from .helpers.error import sendErrorToOwner
 from discord.ext import commands
 import discord
+import asyncio
 import aiohttp
 import random
 import json
@@ -30,11 +32,11 @@ class Mod(object):
         await self.client.say("Initialization done! c:")
 
     @initialize.error
-    async def initialize_eh(self, err, ctx: commands.Context):
+    async def initialize_eh(self, err: Exception, ctx: commands.Context):
         if isinstance(err, commands.CheckFailure):
             await self.client.say("Either you or I are not administrators here :c")
         else:
-            print(f"Error {type(err).__name__}: {err}")
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(pass_context=True, brief="[tag user]")
     @commands.has_role("Ter$kaMod")
@@ -78,7 +80,9 @@ class Mod(object):
         """Remove an X amount of messages from the channel"""
         await self.client.delete_message(ctx.message)
         await self.client.purge_from(ctx.message.channel, limit=amount)
-        await self.client.say(f"Successfully removed `{abs(amount)}` messages!")
+        msg = await self.client.say(f"Successfully removed `{abs(amount)}` messages!")
+        await asyncio.sleep(5)
+        await self.client.delete_message(msg)
 
     @mute.error
     @unmute.error
@@ -94,6 +98,13 @@ class Mod(object):
                 await self.client.reply("you forgot to tag the person... Baka...")
         elif isinstance(err, commands.BadArgument):
             await self.client.reply("what the fuck is that argument..? Baka...")
+        elif isinstance(err, commands.CommandInvokeError):
+            if isinstance(err.original, discord.Forbidden):
+                await self.client.reply("I'm don't have the permissions to kick people here >:[")
+            elif isinstance(err.original, discord.HTTPException):
+                await self.client.reply("`You can only bulk delete messages that are under 14 days old.` (_Discord restriction, blame them_)")                
+        else:
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(pass_context=True, brief="[direct link to image] [name]")
     @commands.has_role("Ter$kaMod")
@@ -119,6 +130,8 @@ class Mod(object):
                 await self.client.say(f"{ctx.message.author.mention} all the custom emoji slots are already in use... Baka...")
             else:
                 await self.client.reply("I wasn't able to get an image from that URL... Are you sure it's a direct link?")
+        else:
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(pass_context=True)
     @commands.has_role("Ter$kaMod")
@@ -138,6 +151,8 @@ class Mod(object):
                 await self.client.say(f"Time's up {ctx.message.author.mention}! You were too slow...")
             else:
                 await self.client.reply("that's not a custom emoji! Baka!")
+        else:
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(pass_context=True, brief="[tag user] [reason (optional)]")
     @commands.has_role("Ter$kaMod")
@@ -167,6 +182,8 @@ class Mod(object):
             await self.client.reply("what the fuck is that argument..? Baka...")
         elif isinstance(err, commands.CheckFailure):
             await self.client.reply("you don't have the `Ter$kaMod` role!")
+        else:
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(pass_context=True, brief="[tag user]")
     async def warnings(self, ctx: commands.Context, target: discord.Member):
@@ -192,6 +209,8 @@ class Mod(object):
             await self.client.reply("you're missing something... Baka...")
         elif isinstance(err, commands.BadArgument):
             await self.client.reply("what the fuck is that argument..? Baka...")
+        else:
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(pass_context=True, brief="[tag user]")
     @commands.has_role("Ter$kaMod")
@@ -218,6 +237,8 @@ class Mod(object):
             await self.client.reply("you're missing something... Baka...")
         elif isinstance(err, commands.BadArgument):
             await self.client.reply("what the fuck is that argument..? Baka...")
+        else:
+            await sendErrorToOwner(self.client, err)
 
             
 def setup(client: commands.Bot):

@@ -1,3 +1,4 @@
+from .helpers.error import sendErrorToOwner
 from discord.ext import commands
 from .helpers import checks
 import discord
@@ -50,6 +51,8 @@ class Helmerz(object):
             await self.client.say(f"{ctx.message.author.mention} you forgot something... Baka...")
         elif isinstance(err, commands.CommandInvokeError):
             await self.client.say(f"{ctx.message.author.mention} what the fuck is that mode?")
+        else:
+            await sendErrorToOwner(self.client, err)
 
     @commands.command(brief="[channel/user ID] [message]")
     @commands.check(checks.isCreator)
@@ -66,6 +69,8 @@ class Helmerz(object):
             await self.client.say(f"{ctx.message.author.mention} you forgot something... Baka...")
         elif isinstance(err, commands.CommandInvokeError):
             await self.client.say(f"{ctx.message.author.mention} invalid channel/user ID... Baka...")
+        else:
+            await sendErrorToOwner(self.client, err)
 
 
 def setup(client: commands.Bot):
